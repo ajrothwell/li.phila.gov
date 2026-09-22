@@ -1,54 +1,20 @@
 # li.phila.gov
 
-This template should help get you started developing with Vue 3 in Vite.
+Public lookup tools for the Philadelphia Department of Licenses and Inspections: property history, contractor lookup, contractor permit lookup, and the L&I and ZBA appeal calendars.
 
-## Recommended IDE Setup
+A rewrite of [L-I-Consolidation](https://github.com/CityOfPhiladelphia/L-I-Consolidation) on Vue 3 and [phila-ui-4](https://github.com/CityOfPhiladelphia/phila-ui-4).
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Setup
 
 ```sh
 pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Data comes from the databridge API gateway, which needs a client id in a gitignored `.env.local`:
 
-```sh
-pnpm build
+```
+VITE_GATEWAY_CLIENT_ID=...
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-pnpm test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+Other scripts: `pnpm build`, `pnpm test:unit`, `pnpm lint`.
