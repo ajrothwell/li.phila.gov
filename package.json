@@ -20,6 +20,7 @@
   "dependencies": {
     "@phila/phila-ui-app-footer": "^1.2.6",
     "@phila/phila-ui-app-header": "^3.0.0",
+    "@phila/phila-ui-cards": "^0.4.0",
     "@phila/phila-ui-core": "^3.2.0",
     "@phila/phila-ui-link": "^1.1.3",
     "pinia": "^4.0.3",

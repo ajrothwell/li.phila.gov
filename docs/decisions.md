@@ -8,7 +8,7 @@ A new repo on Vue 3 rather than upgrading L-I-Consolidation in place. Every laye
 
 ## Sections (2026-09-22)
 
-Dashboard, Property History, Contractor Lookup, Contractor Permit Lookup, Appeals Calendar (L&I and ZBA modes, one layout), plus the `/eclipse-dashboard` redirect. Dropped: Permit Application Tracker (a 2022 stub whose dashboard tile was never turned on) and `/zoning-appeal-calendar` (a redirect nothing has linked to since 2022).
+Dashboard, Property History, Contractor Lookup, Contractor Permit Lookup, Appeals Calendar (L&I and ZBA modes, one layout), plus the `/eclipse-dashboard` redirect. Dropped: Permit Application Tracker (a 2022 stub whose dashboard entry was never turned on) and `/zoning-appeal-calendar` (a redirect nothing has linked to since 2022).
 
 ## TypeScript, kept light (2026-09-22)
 
@@ -41,6 +41,22 @@ phila-ui-4's `AppHeader` shows the app name via its `logo` prop (bell + bold tex
 ## PhilaLink for UI links, plain `<a>` for content links (2026-09-24)
 
 `PhilaLink` adds size, variants, and icons on top of three stacked components. Base CSS already styles bare `<a>` correctly. Use `PhilaLink` in chrome (footer, nav, cards); use `<a>` / `<RouterLink>` in prose and table cells, where Property History renders links by the hundreds.
+
+## Folders by feature, not by type (2026-09-29)
+
+`src/<section>/` holds everything for one section — views, components, store, composables. Cross-cutting code goes in `src/shared/`, which gets by-type subfolders (`shared/composables/`, `shared/components/`) once it has more than a few files. Reason: five sections that share little; by-type folders would scatter each section across four places. The scaffold's `src/stores/` is a by-type leftover and goes away when the first section has its own store.
+
+## "Section" is the word for one of the five (2026-09-30)
+
+Each dashboard entry is a former standalone app — its own layout, search, and data. In code that unit is a `Section` (`src/dashboard/sections.ts`), matching the folder-per-section layout. Not "tile" (names the look, not the thing) and not "app" (collides with `App.vue`, `createApp`, `#app`). eCLIPSE is a section that lives on another site. The list will likely move to `src/shared/` once the router and header read it too.
+
+## Dashboard cards are stock InfoCards, navigated by click (2026-09-30)
+
+phila-ui-4 cards accept `href` (a plain `<a>`, which would reload the page for in-app paths) but not a router `to`. Internal sections use `@click` / Enter → `router.push`, the same way pinboard-3's cards and the old app's buttons did; the eCLIPSE card uses a real `href`. The cost is that internal cards aren't true links (no middle-click, no "copy link"). If `BaseCard` gains a `to` prop, switch to it.
+
+No arrow icon on the cards, though the old app had one. Unmodified cards are the defensible default and match the other phila-ui-4 apps; it's a small addition later if users miss the cue.
+
+Card titles use `has-text-heading-6`. phila-ui's type scale is larger on narrow screens, so on mobile the card titles (20px) are still bigger than the app name in the header (16px, from the single-line title override). Same in the pinboard apps. Still under consideration.
 
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 

@@ -13,16 +13,20 @@ function stubViewport(isMobile: boolean) {
   }))
 }
 
+function mountApp() {
+  return mount(App, { global: { plugins: [router] } })
+}
+
 describe('App', () => {
   it('renders the header title', () => {
     stubViewport(false)
-    const wrapper = mount(App, { global: { plugins: [router] } })
+    const wrapper = mountApp()
     expect(wrapper.text()).toContain('L&I Lookup Resources')
   })
 
   it('renders the mobile navigation button with the footer links on mobile', () => {
     stubViewport(true)
-    const wrapper = mount(App, { global: { plugins: [router] } })
+    const wrapper = mountApp()
     const burger = wrapper.find('button[aria-label="Open mobile navigation panel"]')
     expect(burger.exists()).toBe(true)
     const mobileNav = wrapper.find('.phila-mobile-nav')
@@ -31,7 +35,7 @@ describe('App', () => {
 
   it('does not render the mobile navigation button on desktop', () => {
     stubViewport(false)
-    const wrapper = mount(App, { global: { plugins: [router] } })
+    const wrapper = mountApp()
     expect(wrapper.find('button[aria-label="Open mobile navigation panel"]').exists()).toBe(false)
   })
 })
