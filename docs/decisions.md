@@ -66,11 +66,17 @@ The titles now exist in both `sections.ts` and the router. When that duplication
 
 ## Page container lives on `<main>` (2026-10-02)
 
-Max width, centering, and padding are set once on `<main>` in `App.vue`, as the old app did with `main.container`, so every page lines up without repeating it. A page that needs the full width (the Property History map) will ask for it through route `meta`.
+Max width, centering, and padding are set once on `<main>` in `App.vue`, as the old app did with `main.container`, so every page lines up without repeating it. A page that needs the full width (the old app widened Contractor Lookup) will ask for it through route `meta`.
 
 ## Section pages have a hidden `<h1>` (2026-10-02)
 
 The header already shows the section's name, so a visible page heading would repeat it. Each page keeps an `<h1>` for screen readers and accessibility checkers, hidden with phila-ui's `screen-reader-only` class, and shows the old app's subtitle as its first visible line.
+
+## phila-ui-4 packages stay on `latest`, not `beta` (2026-10-02)
+
+The `beta` channel is ahead (search 2.0.0-beta has a `label` prop that 1.2.3 lacks, for example). But beta packages pin exact beta versions of `phila-ui-core` and each other, so it's all packages or none; mixing would put two copies of core in the app. pinboard-3 runs on betas because it was built while phila-ui-4 was, and needed changes daily. This app uses the stable parts and doesn't. Which channel City apps should ship on is not yet decided. Revisit if `latest` blocks something real, and then switch every `@phila` package together, with exact versions pinned.
+
+When checking what a component accepts, read the installed package (`node_modules/@phila/<pkg>/dist`), not the phila-ui-4 repo, which is ahead of both channels.
 
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 
