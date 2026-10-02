@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import { AppHeader, NavbarBurger } from '@phila/phila-ui-app-header'
 import type { NavbarBrandProps } from '@phila/phila-ui-app-header'
 import { AppFooter } from '@phila/phila-ui-app-footer'
@@ -7,13 +8,14 @@ import { PhilaLink } from '@phila/phila-ui-link'
 import { useIsMobile } from '@/shared/useIsMobile'
 
 const isMobile = useIsMobile()
+const route = useRoute()
 
 const appTitle = 'L&I Lookup Resources'
-
-const navbarBrand: NavbarBrandProps = {
-  brandingImage: { src: '', href: '/', altText: appTitle },
-  logo: { layout: 'single-line', customName: appTitle },
-}
+const headerTitle = computed(() => route.meta.title ?? appTitle)
+const navbarBrand = computed<NavbarBrandProps>(() => ({
+  brandingImage: { src: '', href: '/', altText: headerTitle.value },
+  logo: { layout: 'single-line', customName: headerTitle.value },
+}))
 
 interface FooterLink {
   text: string
@@ -82,6 +84,11 @@ const footerLinks: FooterLink[] = [
 <style scoped>
 .app-main {
   flex: 1;
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--spacing-l) var(--spacing-m);
+  box-sizing: border-box;
 }
 </style>
 

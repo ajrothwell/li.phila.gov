@@ -58,6 +58,20 @@ No arrow icon on the cards, though the old app had one. Unmodified cards are the
 
 Card titles use `has-text-heading-6`. phila-ui's type scale is larger on narrow screens, so on mobile the card titles (20px) are still bigger than the app name in the header (16px, from the single-line title override). Same in the pinboard apps. Still under consideration.
 
+## Header title comes from the route (2026-10-02)
+
+Each section route carries `meta: { title }`, and `App.vue` shows the current route's title in the header, falling back to the app name on the dashboard. The old app did this with a flag in the store that each layout had to remember to set; a route's title is a fact about the route, so it lives on the route. `/appeals-calendar` and `/zba-appeals-calendar` share one page and differ only in `meta`.
+
+The titles now exist in both `sections.ts` and the router. When that duplication costs something, the router reads them from `sections.ts`.
+
+## Page container lives on `<main>` (2026-10-02)
+
+Max width, centering, and padding are set once on `<main>` in `App.vue`, as the old app did with `main.container`, so every page lines up without repeating it. A page that needs the full width (the Property History map) will ask for it through route `meta`.
+
+## Section pages have a hidden `<h1>` (2026-10-02)
+
+The header already shows the section's name, so a visible page heading would repeat it. Each page keeps an `<h1>` for screen readers and accessibility checkers, hidden with phila-ui's `screen-reader-only` class, and shows the old app's subtitle as its first visible line.
+
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 
 jsdom has no layout and no WebGL. Tests cover component wiring (slots, imports, router), stores, and API calls. How things look is checked in the browser. Map components get no unit tests.

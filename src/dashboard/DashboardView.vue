@@ -35,9 +35,6 @@ function open(section: Section) {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-s);
-  max-width: 60rem;
-  margin: var(--spacing-l) auto;
-  padding: 0 var(--spacing-m);
 }
 
 /* phila-ui gives card body text a bottom margin for stacking paragraphs;
