@@ -76,5 +76,10 @@ describe('App', () => {
       const home = wrapper.find('nav[aria-label="breadcrumb"] a[aria-label="Home"]')
       expect(home.attributes('href')).toBe('/')
     })
+
+    it('end with the searched address on the search page', async () => {
+      const wrapper = await mountAt('/property-history/search?address=1234 Market St', false)
+      expect(breadcrumbLabels(wrapper)).toEqual(['Property History', '1234 Market St'])
+    })
   })
 })

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import DashboardView from '@/dashboard/DashboardView.vue'
 import PropertyHistoryView from '@/property-history/PropertyHistoryView.vue'
 import PropertyHistoryResults from '@/property-history/PropertyHistoryResults.vue'
@@ -14,6 +15,8 @@ declare module 'vue-router' {
     title?: string
     /** Shown under the header, above the breadcrumbs. */
     subtitle?: string
+    /** Breadcrumb label worked out from the current URL, for routes whose crumb isn't fixed text. */
+    breadcrumb?: (route: RouteLocationNormalizedLoaded) => string
   }
 }
 
@@ -39,6 +42,10 @@ const router = createRouter({
           path: 'search',
           name: 'property-history-search',
           component: PropertyHistoryResults,
+          meta: {
+            breadcrumb: (route) =>
+              typeof route.query.address === 'string' ? route.query.address : '',
+          },
         },
       ],
     },

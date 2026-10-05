@@ -19,11 +19,20 @@ const navbarBrand = computed<NavbarBrandProps>(() => ({
   logo: { layout: 'single-line', customName: headerTitle.value },
 }))
 
-// One crumb per matched route that has a title. The component adds the home link itself.
+// One crumb per matched route, labelled by its title or worked out from the URL.
+// The component adds the home link itself.
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
   const trail: BreadcrumbItem[] = []
   for (const record of route.matched) {
-    if (record.meta.title) trail.push({ label: record.meta.title, href: record.path })
+    // Most routes have a fixed title. A few (like the search page) work out
+    // their crumb from the current URL instead.
+    let label = record.meta.title
+    if (record.meta.breadcrumb) {
+      label = record.meta.breadcrumb(route)
+    }
+    if (label) {
+      trail.push({ label: label, href: record.path })
+    }
   }
   return trail
 })
