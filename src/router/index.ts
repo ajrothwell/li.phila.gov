@@ -12,6 +12,8 @@ declare module 'vue-router' {
   interface RouteMeta {
     /** Shown in the app header instead of the app name. */
     title?: string
+    /** Shown under the header, above the breadcrumbs. */
+    subtitle?: string
   }
 }
 
@@ -27,7 +29,10 @@ const router = createRouter({
       path: '/property-history',
       name: 'property-history',
       component: PropertyHistoryView,
-      meta: { title: 'Property History' },
+      meta: {
+        title: 'Property History',
+        subtitle: 'Permits, licenses, violations & appeals by address',
+      },
       children: [
         {
           // /property-history/search?address=…
@@ -41,25 +46,37 @@ const router = createRouter({
       path: '/contractor-lookup',
       name: 'contractor-lookup',
       component: ContractorLookupView,
-      meta: { title: 'Find a Licensed Contractor' },
+      meta: {
+        title: 'Find a Licensed Contractor',
+        subtitle: 'Search for contractors and tradespeople',
+      },
     },
     {
       path: '/contractor-permit-lookup',
       name: 'contractor-permit-lookup',
       component: ContractorPermitLookupView,
-      meta: { title: 'Contractor Permit Lookup' },
+      meta: {
+        title: 'Contractor Permit Lookup',
+        subtitle: 'View the status of your permits',
+      },
     },
     {
       path: '/appeals-calendar',
       name: 'appeals-calendar',
       component: AppealsCalendarView,
-      meta: { title: 'L&I Appeals Calendar' },
+      meta: {
+        title: 'L&I Appeals Calendar',
+        subtitle: 'See dates and agendas for L&I appeal hearings',
+      },
     },
     {
       path: '/zba-appeals-calendar',
       name: 'zba-appeals-calendar',
       component: AppealsCalendarView,
-      meta: { title: 'Zoning Board of Adjustment (ZBA) Appeals Calendar' },
+      meta: {
+        title: 'Zoning Board of Adjustment (ZBA) Appeals Calendar',
+        subtitle: 'See dates and agendas for ZBA appeal hearings',
+      },
     },
     {
       // Kept for old bookmarks; the dashboard section links to eCLIPSE directly.

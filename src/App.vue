@@ -4,6 +4,8 @@ import { RouterView, useRoute } from 'vue-router'
 import { AppHeader, NavbarBurger } from '@phila/phila-ui-app-header'
 import type { NavbarBrandProps } from '@phila/phila-ui-app-header'
 import { AppFooter } from '@phila/phila-ui-app-footer'
+import { Breadcrumbs } from '@phila/phila-ui-breadcrumbs'
+import type { BreadcrumbItem } from '@phila/phila-ui-breadcrumbs'
 import { PhilaLink } from '@phila/phila-ui-link'
 import { useIsMobile } from '@/shared/useIsMobile'
 
@@ -16,6 +18,15 @@ const navbarBrand = computed<NavbarBrandProps>(() => ({
   brandingImage: { src: '', href: '/', altText: headerTitle.value },
   logo: { layout: 'single-line', customName: headerTitle.value },
 }))
+
+// One crumb per matched route that has a title. The component adds the home link itself.
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
+  const trail: BreadcrumbItem[] = []
+  for (const record of route.matched) {
+    if (record.meta.title) trail.push({ label: record.meta.title, href: record.path })
+  }
+  return trail
+})
 
 interface FooterLink {
   text: string
@@ -63,6 +74,8 @@ const footerLinks: FooterLink[] = [
     </template>
   </AppHeader>
   <main class="app-main">
+    <p v-if="route.meta.subtitle" class="content section-subtitle">{{ route.meta.subtitle }}</p>
+    <Breadcrumbs v-if="breadcrumbs.length > 0" :items="breadcrumbs" />
     <RouterView />
   </main>
   <AppFooter class="app-footer" :sub-footer-only="true">

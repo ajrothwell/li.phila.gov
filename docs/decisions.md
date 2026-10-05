@@ -70,7 +70,15 @@ Max width, centering, and padding are set once on `<main>` in `App.vue`, as the 
 
 ## Section pages have a hidden `<h1>` (2026-10-02)
 
-The header already shows the section's name, so a visible page heading would repeat it. Each page keeps an `<h1>` for screen readers and accessibility checkers, hidden with phila-ui's `screen-reader-only` class, and shows the old app's subtitle as its first visible line.
+The header already shows the section's name, so a visible page heading would repeat it. Each page keeps an `<h1>` for screen readers and accessibility checkers, hidden with phila-ui's `screen-reader-only` class.
+
+## Subtitle comes from the route, shown above the breadcrumbs (2026-10-06)
+
+The old app's subtitle was the header's second line. It is route information like the title (`meta.subtitle`), and `App.vue` shows it directly under the header, above the breadcrumbs — the old app's order. It was briefly each page's first line instead; that put it below the breadcrumbs and couldn't differ between the two calendar routes.
+
+## Breadcrumbs come from the matched routes (2026-10-06)
+
+`App.vue` builds the trail from `route.matched`: one crumb per matched route with a `meta.title`, in parent-to-child order. `@phila/phila-ui-breadcrumbs` adds the home link itself, so the trail doesn't include the dashboard, and breadcrumbs are hidden on the dashboard. The old app kept a hand-written crumb list on every route plus a component full of per-crumb special cases. Crumb links are plain `<a>` (full reload) — the package takes `href` only; same gap as cards.
 
 ## phila-ui-4 packages stay on `latest`, not `beta` (2026-10-02)
 

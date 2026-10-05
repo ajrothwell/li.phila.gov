@@ -10,6 +10,11 @@ function headerTitle(wrapper: VueWrapper) {
   return wrapper.find('.phila-navbar-logo').text()
 }
 
+// The breadcrumb labels, in order.
+function breadcrumbLabels(wrapper: VueWrapper) {
+  return wrapper.findAll('nav[aria-label="breadcrumb"] li.breadcrumb-item').map((li) => li.text())
+}
+
 describe('App', () => {
   it('renders the mobile navigation button with the footer links on mobile', async () => {
     const wrapper = await mountAt('/', true)
@@ -45,6 +50,31 @@ describe('App', () => {
       await router.push('/property-history')
       await flushPromises()
       expect(headerTitle(wrapper)).toBe('Property History')
+    })
+  })
+
+  describe('section subtitle', () => {
+    it('is shown under the header on a section page, and not on the dashboard', async () => {
+      const section = await mountAt('/property-history', false)
+      expect(section.find('.section-subtitle').text()).toBe(
+        'Permits, licenses, violations & appeals by address',
+      )
+      const dashboard = await mountAt('/', false)
+      expect(dashboard.find('.section-subtitle').exists()).toBe(false)
+    })
+  })
+
+  describe('breadcrumbs', () => {
+    it('are not shown on the dashboard', async () => {
+      const wrapper = await mountAt('/', false)
+      expect(wrapper.find('nav[aria-label="breadcrumb"]').exists()).toBe(false)
+    })
+
+    it('show the section after a home link', async () => {
+      const wrapper = await mountAt('/property-history', false)
+      expect(breadcrumbLabels(wrapper)).toEqual(['Property History'])
+      const home = wrapper.find('nav[aria-label="breadcrumb"] a[aria-label="Home"]')
+      expect(home.attributes('href')).toBe('/')
     })
   })
 })
