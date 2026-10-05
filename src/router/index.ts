@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '@/dashboard/DashboardView.vue'
 import PropertyHistoryView from '@/property-history/PropertyHistoryView.vue'
+import PropertyHistoryResults from '@/property-history/PropertyHistoryResults.vue'
 import ContractorLookupView from '@/contractor-lookup/ContractorLookupView.vue'
 import ContractorPermitLookupView from '@/contractor-permit-lookup/ContractorPermitLookupView.vue'
 import AppealsCalendarView from '@/appeals-calendar/AppealsCalendarView.vue'
@@ -27,6 +28,14 @@ const router = createRouter({
       name: 'property-history',
       component: PropertyHistoryView,
       meta: { title: 'Property History' },
+      children: [
+        {
+          // /property-history/search?address=…
+          path: 'search',
+          name: 'property-history-search',
+          component: PropertyHistoryResults,
+        },
+      ],
     },
     {
       path: '/contractor-lookup',
