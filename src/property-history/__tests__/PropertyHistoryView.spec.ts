@@ -1,17 +1,10 @@
 import { describe, it, expect } from 'vitest'
 
-import { mount, flushPromises } from '@vue/test-utils'
-import { RouterView } from 'vue-router'
+import { flushPromises } from '@vue/test-utils'
 import router from '@/router'
+import { mountAt } from '@/__tests__/helpers'
 
 const searchInput = 'input[placeholder="Search an address..."]'
-
-// Go to a URL, then show whatever page the router puts there.
-async function mountAt(path: string) {
-  await router.push(path)
-  await flushPromises()
-  return mount(RouterView, { global: { plugins: [router] } })
-}
 
 describe('PropertyHistoryView', () => {
   it('shows an address search box', async () => {
