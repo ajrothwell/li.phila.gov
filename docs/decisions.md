@@ -86,6 +86,18 @@ The `beta` channel is ahead (search 2.0.0-beta has a `label` prop that 1.2.3 lac
 
 When checking what a component accepts, read the installed package (`node_modules/@phila/<pkg>/dist`), not the phila-ui-4 repo, which is ahead of both channels.
 
+## File names say what the file is, even inside a section folder (2026-10-06)
+
+`property-history/propertyHistoryStore.ts`, not `property-history/store.ts`. Folder-defines-it names (`store.ts`, `index.ts`) are a real convention, but ten of them make editor tabs, diffs, and search results unreadable. Components are PascalCase (`PropertyHistoryView.vue`); other `.ts` files are camelCase and named for what they export (`useIsMobile.ts`, `propertyHistoryStore.ts`). Spec files take the name of the file they test.
+
+## Pinia "setup" stores, not "option" stores (2026-10-06)
+
+Stores are written as `defineStore('name', () => { refs, functions, return })` — the same shape as a composable — rather than `{ state, actions, getters }` as in vue3-atlas. Chosen so there's one shape to learn (composables and stores read alike), and it's the more flexible form. Every store in this app uses it.
+
+## AIS lookup lives in `src/shared/ais.ts`, behind its own record type (2026-10-06)
+
+`lookupAddress()` is the only code that knows AIS's field names and pipe-joined ids. It returns an `AddressRecord` in our names, with ids as lists and `null` ids as empty lists (the old app crashed on properties with no eCLIPSE id). A 404 is "not found" (`null`), anything else is an error. Calls go to the MuleSoft gateway (`api-prod.phila.gov/ais/v1`) with the app's client id in dev builds only, as vue3-atlas does; deployed origins are recognized by Anypoint. The `cache_origin` parameter is atlas's workaround for the gateway's CORS cache.
+
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 
 jsdom has no layout and no WebGL. Tests cover component wiring (slots, imports, router), stores, and API calls. How things look is checked in the browser. Map components get no unit tests.

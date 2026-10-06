@@ -1,30 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { lookupAddress } from '../ais'
-
-// A trimmed-down AIS reply for 1234 Market St, with the fields we read.
-const sampleProperties = {
-  street_address: '1234 MARKET ST',
-  opa_address: '1234 MARKET ST',
-  opa_account_num: '883309050',
-  pwd_parcel_id: '542611',
-  li_address_key: '410516',
-  eclipse_location_id: '129832656|137826423',
-  bin: '1496963|1496964|1530931',
-  li_district: 'CENTRAL EAST',
-  opa_owners: 'SEPTA',
-  unit_type: '',
-  unit_num: '',
-  zip_code: '19107',
-}
-
-// Pretend AIS answered with this status and body.
-function stubAis(status: number, body?: unknown) {
-  vi.stubGlobal('fetch', async () => ({
-    ok: status >= 200 && status < 300,
-    status,
-    json: async () => body,
-  }))
-}
+import { sampleProperties, stubAis, stubAisFound } from '@/__tests__/fakeAis'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -32,7 +8,7 @@ afterEach(() => {
 
 describe('lookupAddress', () => {
   it('shapes an AIS feature into an address record', async () => {
-    stubAis(200, { features: [{ properties: sampleProperties }] })
+    stubAisFound()
     const record = await lookupAddress('1234 market st')
     expect(record).toEqual({
       streetAddress: '1234 MARKET ST',
