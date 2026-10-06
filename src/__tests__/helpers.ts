@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { createPinia } from 'pinia'
 import App from '@/App.vue'
 import router from '@/router'
 
@@ -12,10 +13,10 @@ export function stubViewport(isMobile: boolean) {
   }))
 }
 
-/** Go to a URL, then mount the whole app showing that page. */
+/** Go to a URL, then mount the whole app showing that page, with a fresh Pinia. */
 export async function mountAt(path: string, isMobile = false) {
   stubViewport(isMobile)
   await router.push(path)
   await flushPromises()
-  return mount(App, { global: { plugins: [router] } })
+  return mount(App, { global: { plugins: [router, createPinia()] } })
 }

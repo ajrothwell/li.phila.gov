@@ -88,7 +88,7 @@ When checking what a component accepts, read the installed package (`node_module
 
 ## File names say what the file is, even inside a section folder (2026-10-06)
 
-`property-history/propertyHistoryStore.ts`, not `property-history/store.ts`. Folder-defines-it names (`store.ts`, `index.ts`) are a real convention, but ten of them make editor tabs, diffs, and search results unreadable. Components are PascalCase (`PropertyHistoryView.vue`); other `.ts` files are camelCase and named for what they export (`useIsMobile.ts`, `propertyHistoryStore.ts`). Spec files take the name of the file they test.
+`property-history/propertyHistoryStore.ts`, not `property-history/store.ts`. Folder-defines-it names (`store.ts`, `index.ts`) are a real convention, but ten of them make editor tabs, diffs, and search results unreadable. Components are PascalCase (`PropertyHistoryView.vue`); other `.ts` files are camelCase and named for what they export (`useIsMobile.ts`, `propertyHistoryStore.ts`). Spec files take the name of the file they test. The same goes for variables: a store is held as `const propertyHistoryStore = usePropertyHistoryStore()` — the function name without `use` — never `const store = …`, so the name says both which store and that it's a store.
 
 ## Pinia "setup" stores, not "option" stores (2026-10-06)
 
