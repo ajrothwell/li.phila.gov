@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import { AppHeader, NavbarBurger } from '@phila/phila-ui-app-header'
 import type { NavbarBrandProps } from '@phila/phila-ui-app-header'
 import { AppFooter } from '@phila/phila-ui-app-footer'
@@ -11,11 +11,15 @@ import { useIsMobile } from '@/shared/useIsMobile'
 
 const isMobile = useIsMobile()
 const route = useRoute()
+const router = useRouter()
+
+// Where the app lives: '/' normally, '/li.phila.gov/' on the GitHub Pages demo.
+const homeHref = import.meta.env.BASE_URL
 
 const appTitle = 'L&I Lookup Resources'
 const headerTitle = computed(() => route.meta.title ?? appTitle)
 const navbarBrand = computed<NavbarBrandProps>(() => ({
-  brandingImage: { src: '', href: '/', altText: headerTitle.value },
+  brandingImage: { src: '', href: homeHref, altText: headerTitle.value },
   logo: { layout: 'single-line', customName: headerTitle.value },
 }))
 
@@ -31,7 +35,8 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
       label = record.meta.breadcrumb(route)
     }
     if (label) {
-      trail.push({ label: label, href: record.path })
+      // router.resolve adds the base path, so the link is right wherever the app lives.
+      trail.push({ label: label, href: router.resolve({ path: record.path }).href })
     }
   }
   return trail
@@ -84,7 +89,7 @@ const footerLinks: FooterLink[] = [
   </AppHeader>
   <main class="app-main">
     <p v-if="route.meta.subtitle" class="content section-subtitle">{{ route.meta.subtitle }}</p>
-    <Breadcrumbs v-if="breadcrumbs.length > 0" :items="breadcrumbs" />
+    <Breadcrumbs v-if="breadcrumbs.length > 0" :items="breadcrumbs" :home-href="homeHref" />
     <RouterView />
   </main>
   <AppFooter class="app-footer" :sub-footer-only="true">

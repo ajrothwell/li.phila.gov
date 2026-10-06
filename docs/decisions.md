@@ -98,6 +98,14 @@ Stores are written as `defineStore('name', () => { refs, functions, return })` â
 
 `lookupAddress()` is the only code that knows AIS's field names and pipe-joined ids. It returns an `AddressRecord` in our names, with ids as lists and `null` ids as empty lists (the old app crashed on properties with no eCLIPSE id). A 404 is "not found" (`null`), anything else is an error. Calls go to the MuleSoft gateway (`api-prod.phila.gov/ais/v1`) with the app's client id in dev builds only, as vue3-atlas does; deployed origins are recognized by Anypoint. The `cache_origin` parameter is atlas's workaround for the gateway's CORS cache.
 
+## No in-app Carto fallback, no `apiSources` switch (2026-10-06)
+
+Data calls go to the databridge gateway only. The gateway itself falls back to Carto when its first backend fails; the client-side Carto fallback and per-dataset source switch in L-I-Consolidation and vue3-atlas were a feature-flag rollback for the migration, not a reliability feature, and a new app has nothing to roll back to. If the gateway proves unreliable, that's a gateway problem to raise, not a second data path to carry.
+
+## Demo deploy to GitHub Pages (2026-10-06)
+
+`.github/workflows/pages.yml` publishes `main` to `https://ajrothwell.github.io/li.phila.gov/` so colleagues can see progress. It is not the real deployment (that waits for the City org). Three things make a sub-path work: `vite build --base=/li.phila.gov/`, a `404.html` copy of `index.html` so deep links reach the router, and base-aware home links in `App.vue` (`import.meta.env.BASE_URL`, `router.resolve(...).href`). The build gets the gateway client id from a repository secret, since Anypoint doesn't know that origin; `gateway.ts` now sends the id whenever the build has one. City builds set none and rely on origin recognition, as before.
+
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 
 jsdom has no layout and no WebGL. Tests cover component wiring (slots, imports, router), stores, and API calls. How things look is checked in the browser. Map components get no unit tests.

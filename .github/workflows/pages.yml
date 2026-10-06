@@ -1,0 +1,49 @@
+# Demo deploy to GitHub Pages (https://ajrothwell.github.io/li.phila.gov/) so colleagues
+# can see progress. Not the real deployment; that comes with the move to the City org.
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # The site lives at a sub-path, so assets and routes need the base. The client id
+      # comes from a repository secret; Anypoint doesn't know this origin.
+      - run: pnpm build --base=/li.phila.gov/
+        env:
+          VITE_GATEWAY_CLIENT_ID: ${{ secrets.VITE_GATEWAY_CLIENT_ID }}
+      # Pages serves 404.html for unknown paths; making it the app lets deep links work.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
