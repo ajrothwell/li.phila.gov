@@ -15,7 +15,7 @@ describe('lookupAddress', () => {
       opaAddress: '1234 MARKET ST',
       opaAccountNumber: '883309050',
       pwdParcelId: '542611',
-      liAddressKey: '410516',
+      liAddressKeys: ['410516'],
       eclipseLocationIds: ['129832656', '137826423'],
       bins: ['1496963', '1496964', '1530931'],
       liDistrict: 'CENTRAL EAST',

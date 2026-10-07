@@ -10,7 +10,8 @@ export interface AddressRecord {
   opaAddress: string
   opaAccountNumber: string
   pwdParcelId: string
-  liAddressKey: string
+  /** Address keys in L&I's older HANSEN system. Usually one; may be several or none. */
+  liAddressKeys: string[]
   /** Location ids in L&I's eCLIPSE system. Empty for some properties. */
   eclipseLocationIds: string[]
   /** Building identification numbers. */
@@ -28,7 +29,7 @@ interface AisProperties {
   opa_address: string
   opa_account_num: string
   pwd_parcel_id: string
-  li_address_key: string
+  li_address_key: string | null
   eclipse_location_id: string | null
   bin: string | null
   li_district: string
@@ -54,7 +55,7 @@ function toAddressRecord(p: AisProperties): AddressRecord {
     opaAddress: p.opa_address,
     opaAccountNumber: p.opa_account_num,
     pwdParcelId: p.pwd_parcel_id,
-    liAddressKey: p.li_address_key,
+    liAddressKeys: splitIds(p.li_address_key),
     eclipseLocationIds: splitIds(p.eclipse_location_id),
     bins: splitIds(p.bin),
     liDistrict: p.li_district,
