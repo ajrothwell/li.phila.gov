@@ -10,9 +10,11 @@ A new repo on Vue 3 rather than upgrading L-I-Consolidation in place. Every laye
 
 Dashboard, Property History, Contractor Lookup, Contractor Permit Lookup, Appeals Calendar (L&I and ZBA modes, one layout), plus the `/eclipse-dashboard` redirect. Dropped: Permit Application Tracker (a 2022 stub whose dashboard entry was never turned on) and `/zoning-appeal-calendar` (a redirect nothing has linked to since 2022).
 
-## TypeScript, kept light (2026-09-22)
+## TypeScript, kept light (2026-09-22, refined 2026-10-07)
 
-phila-ui-4 is typed, so the editor can check props and catch wiring mistakes before the page runs. No clever generics.
+phila-ui-4 is typed, so the editor can check props and catch wiring mistakes before the page runs.
+
+Standard language idioms are fine and are learned as they come up: `.map`, `?.`, `??`, destructuring, `Array.from({ length })`, arrow functions. They're in every library and doc Andy reads, so keeping them out of this code wouldn't avoid them. Type-system gymnastics stay out: `ReturnType<typeof x>`, stacked generics like `Record<string, unknown>[][]`, generic parameters on our own functions. Name the inner type instead (`type Page = DatabridgeRow[]`).
 
 ## Pinia, one store per section (2026-09-22)
 
