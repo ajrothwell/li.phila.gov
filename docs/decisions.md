@@ -92,6 +92,10 @@ When checking what a component accepts, read the installed package (`node_module
 
 `property-history/propertyHistoryStore.ts`, not `property-history/store.ts`. Folder-defines-it names (`store.ts`, `index.ts`) are a real convention, but ten of them make editor tabs, diffs, and search results unreadable. Components are PascalCase (`PropertyHistoryView.vue`); other `.ts` files are camelCase and named for what they export (`useIsMobile.ts`, `propertyHistoryStore.ts`). Spec files take the name of the file they test. The same goes for variables: a store is held as `const propertyHistoryStore = usePropertyHistoryStore()` — the function name without `use` — never `const store = …`, so the name says both which store and that it's a store.
 
+Inside a store that holds several things, state comes in named pairs: `address` / `addressStatus`, `permits` / `permitsStatus`. No bare `status`. The action that loads everything for a property is `loadProperty`, since it keeps growing beyond "search".
+
+Imports: one line per file imported, with types inline — `import { lookupAddress, type AddressRecord } from '@/shared/ais'` — rather than a separate `import type` line for the same file. Prettier decides line breaks (`pnpm format`); nobody formats by hand.
+
 ## Pinia "setup" stores, not "option" stores (2026-10-06)
 
 Stores are written as `defineStore('name', () => { refs, functions, return })` — the same shape as a composable — rather than `{ state, actions, getters }` as in vue3-atlas. Chosen so there's one shape to learn (composables and stores read alike), and it's the more flexible form. Every store in this app uses it.
@@ -107,6 +111,14 @@ Data calls go to the databridge gateway only. The gateway itself falls back to C
 ## Demo deploy to GitHub Pages (2026-10-06)
 
 `.github/workflows/pages.yml` publishes `main` to `https://ajrothwell.github.io/li.phila.gov/` so colleagues can see progress. It is not the real deployment (that waits for the City org). Three things make a sub-path work: `vite build --base=/li.phila.gov/`, a `404.html` copy of `index.html` so deep links reach the router, and base-aware home links in `App.vue` (`import.meta.env.BASE_URL`, `router.resolve(...).href`). The build gets the gateway client id from a repository secret, since Anypoint doesn't know that origin; `gateway.ts` now sends the id whenever the build has one. City builds set none and rely on origin recognition, as before.
+
+## Gateway timestamps are read as New York time, explicitly (2026-10-07)
+
+databridge sends timestamps as Philadelphia clock readings (bare, or with a false `Z`). `normalizeTimestamps` in `src/shared/databridge.ts` relabels them as real UTC so they match what Carto returns (verified on permit RP-2022-005991: gateway `2022-06-15T00:00:00`, Carto `2022-06-15T04:00:00Z`). Unlike the atlas and L-I-Consolidation versions, it interprets the reading as `America/New_York` rather than "local time" — the viewer's computer may be anywhere (and CI runs in UTC), and a Philadelphia midnight read in another zone shifts the date by a day. It also returns a new row rather than editing the one passed in. Bead `li-4oy` tracks reporting the gateway behavior to CityGeo and removing this when it's fixed. `formatDate` in `src/shared/` displays UTC timestamps as Philadelphia dates for the same reason.
+
+## Permits: the where clause and the record (2026-10-07)
+
+`src/property-history/permits.ts`: `propertyRecordsWhere(address)` is the WHERE clause that picks a property's rows in the permits-style tables — HANSEN rows by address, L&I address key, or OPA account; eCLIPSE rows by eCLIPSE location id, parcel, or OPA account — copied from vue3-atlas, where the two arms were proven equal to the old app's UNION. Apostrophes are doubled (the old app's clause broke on O'NEILL ST); an empty id list becomes `IN ('')` rather than invalid `IN ()`. `fetchPermits` returns `Permit` records in our names with the ~12 fields the detail page will want, newest first. The page shows three columns, as the old app did.
 
 ## Vitest for wiring and data, not for maps or CSS (2026-09-24)
 

@@ -4,6 +4,7 @@ import { flushPromises } from '@vue/test-utils'
 import router from '@/router'
 import { mountAt } from '@/__tests__/helpers'
 import { stubAis, stubAisFound } from '@/__tests__/fakeAis'
+import { stubAisFoundAndPermits } from '@/__tests__/fakeServices'
 
 const searchInput = 'input[placeholder="Search an address..."]'
 
@@ -67,6 +68,26 @@ describe('PropertyHistoryView', () => {
       const wrapper = await mountAt('/property-history/search?address=asdfqwerty')
       await flushPromises()
       expect(wrapper.text()).toContain('No results found for asdfqwerty')
+    })
+
+    it('list the permits, newest first, with a count', async () => {
+      stubAisFoundAndPermits()
+      const wrapper = await mountAt('/property-history/search?address=943 Sigel St')
+      await flushPromises()
+      expect(wrapper.text()).toContain('2 Permits for this property')
+      const cells = wrapper.findAll('tbody td').map((td) => td.text())
+      expect(cells).toEqual([
+        'Jun 15, 2022', 'RP-2022-005991', 'Residential Building Permit',
+        'Mar 15, 2022', 'PP-2022-004106', 'Plumbing Permit',
+      ])
+    })
+
+    it('say there are no permits when the gateway returns none', async () => {
+      stubAisFoundAndPermits([])
+      const wrapper = await mountAt('/property-history/search?address=943 Sigel St')
+      await flushPromises()
+      expect(wrapper.text()).toContain('No Permits for this property')
+      expect(wrapper.find('table').exists()).toBe(false)
     })
   })
 })

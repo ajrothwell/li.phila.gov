@@ -16,33 +16,33 @@ afterEach(() => {
 describe('property history store', () => {
   it('starts with no address and nothing searched', () => {
     const propertyHistoryStore = usePropertyHistoryStore()
-    expect(propertyHistoryStore.status).toBe('idle')
+    expect(propertyHistoryStore.addressStatus).toBe('idle')
     expect(propertyHistoryStore.address).toBeNull()
-    expect(propertyHistoryStore.searchedFor).toBe('')
+    expect(propertyHistoryStore.searchedAddress).toBe('')
   })
 
   it('holds the address after a successful search', async () => {
     stubAisFound()
     const propertyHistoryStore = usePropertyHistoryStore()
-    await propertyHistoryStore.search('1234 market st')
-    expect(propertyHistoryStore.status).toBe('found')
+    await propertyHistoryStore.loadProperty('1234 market st')
+    expect(propertyHistoryStore.addressStatus).toBe('found')
     expect(propertyHistoryStore.address?.streetAddress).toBe('1234 MARKET ST')
-    expect(propertyHistoryStore.searchedFor).toBe('1234 market st')
+    expect(propertyHistoryStore.searchedAddress).toBe('1234 market st')
   })
 
   it('reports not-found when AIS has no match', async () => {
     stubAis(404)
     const propertyHistoryStore = usePropertyHistoryStore()
-    await propertyHistoryStore.search('asdfqwerty')
-    expect(propertyHistoryStore.status).toBe('not-found')
+    await propertyHistoryStore.loadProperty('asdfqwerty')
+    expect(propertyHistoryStore.addressStatus).toBe('not-found')
     expect(propertyHistoryStore.address).toBeNull()
   })
 
   it('reports an error when AIS fails', async () => {
     stubAis(500)
     const propertyHistoryStore = usePropertyHistoryStore()
-    await propertyHistoryStore.search('1234 market st')
-    expect(propertyHistoryStore.status).toBe('error')
+    await propertyHistoryStore.loadProperty('1234 market st')
+    expect(propertyHistoryStore.addressStatus).toBe('error')
     expect(propertyHistoryStore.address).toBeNull()
   })
 })
