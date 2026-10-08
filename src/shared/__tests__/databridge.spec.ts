@@ -1,20 +1,19 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { fetchAllRows, normalizeTimestamps } from '../databridge'
-import type { DatabridgeRow } from '../databridge'
-
-/** One page of rows, as the gateway would return it. */
-type Page = DatabridgeRow[]
+import { stubGatewayPages } from '@/__tests__/fakeGateway'
 
 afterEach(() => {
   vi.unstubAllGlobals()
 })
 
 describe('normalizeTimestamps', () => {
-  it('reads a bare timestamp and a falsely-UTC one as the same local time', () => {
-    const bare = normalizeTimestamps({ when: '2026-09-10T16:47:51' })
-    const falseUtc = normalizeTimestamps({ when: '2026-09-10T16:47:51.000Z' })
-    expect(bare.when).toBe(falseUtc.when)
-    expect(bare.when).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)
+  it('reads a bare clock reading as Philadelphia time and writes real UTC', () => {
+    expect(normalizeTimestamps({ when: '2022-06-15T00:00:00' }).when).toBe('2022-06-15T04:00:00Z') // summer
+    expect(normalizeTimestamps({ when: '2022-01-15T00:00:00' }).when).toBe('2022-01-15T05:00:00Z') // winter
+  })
+
+  it('leaves a string that already carries a zone alone', () => {
+    expect(normalizeTimestamps({ when: '2022-06-15T04:00:00Z' }).when).toBe('2022-06-15T04:00:00Z')
   })
 
   it('leaves everything that is not a timestamp alone', () => {
@@ -27,24 +26,6 @@ describe('normalizeTimestamps', () => {
     expect(row).toEqual({ permitnumber: 'P-2026-001', objectid: 42, note: null, date: '2026-09-10' })
   })
 })
-
-// Pretend the gateway answers each request in turn with these pages of rows.
-function stubGatewayPages(pages: Page[]) {
-  const requests: string[] = []
-  let call = 0
-  vi.stubGlobal('fetch', async (url: string) => {
-    requests.push(url)
-    const pageRows = pages[call] ?? []
-    call += 1
-    // The gateway wraps each row as { properties: row } inside data.features.
-    return {
-      ok: true,
-      status: 200,
-      json: async () => ({ data: { features: pageRows.map((row) => ({ properties: row })) } }),
-    }
-  })
-  return requests
-}
 
 describe('fetchAllRows', () => {
   it('returns the rows of a single short page', async () => {

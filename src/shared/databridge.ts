@@ -1,3 +1,4 @@
+import { fromZonedTime } from 'date-fns-tz'
 import { gatewayClientId } from './gateway'
 
 const DATABRIDGE_URL = 'https://api-prod.phila.gov/databridge-api/v1/get'
@@ -18,23 +19,33 @@ export interface TableQuery {
   where: string
 }
 
-// databridge writes every timestamp as the table's LOCAL clock reading — sometimes bare
-// ('2026-09-10T16:47:51'), sometimes with a false UTC label ('…T16:47:51.000Z'). Trusting
-// the label shifts times by 4–5 hours and can roll a date back a day. So every form is
-// read as local time and relabeled as real UTC ('2026-09-10T20:47:51Z').
-const LOCAL_CLOCK_TIMESTAMP = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.\d{3})?Z?$/
+// databridge writes every timestamp as the PHILADELPHIA clock reading with no time zone,
+// e.g. '2022-06-15T00:00:00' for a permit issued June 15. A bare reading means "whatever
+// zone the reader is in", so it's read as New York time, explicitly, and relabeled as the
+// real instant in UTC ('2022-06-15T04:00:00Z'). From there a Date can be compared and
+// subtracted safely, and formatDate shows it as a Philadelphia date wherever the viewer is.
+const BARE_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/
 
-/** Relabels every timestamp-looking string in the row from local clock time to real UTC. */
+export const PHILADELPHIA = 'America/New_York'
+
+/** Reads a bare clock reading like "2022-06-15T00:00:00" as Philadelphia time; returns real UTC. */
+function philadelphiaClockToUtc(clock: string): string {
+  return fromZonedTime(clock, PHILADELPHIA).toISOString().replace('.000Z', 'Z')
+}
+
+/**
+ * A copy of the row with every timestamp-looking string relabeled from Philadelphia clock
+ * time to real UTC. The row passed in is left untouched.
+ */
 export function normalizeTimestamps(row: DatabridgeRow): DatabridgeRow {
-  for (const key of Object.keys(row)) {
-    const value = row[key]
-    if (typeof value !== 'string') continue
-    const localClock = value.match(LOCAL_CLOCK_TIMESTAMP)?.[1]
-    if (localClock) {
-      row[key] = new Date(localClock).toISOString().replace('.000Z', 'Z')
+  const normalized: DatabridgeRow = { ...row }
+  for (const key of Object.keys(normalized)) {
+    const value = normalized[key]
+    if (typeof value === 'string' && BARE_TIMESTAMP.test(value)) {
+      normalized[key] = philadelphiaClockToUtc(value)
     }
   }
-  return row
+  return normalized
 }
 
 /** Fetches one page of rows. Throws if the gateway doesn't answer 2xx. */
