@@ -23,13 +23,23 @@ describe('normalizeTimestamps', () => {
       note: null,
       date: '2026-09-10',
     })
-    expect(row).toEqual({ permitnumber: 'P-2026-001', objectid: 42, note: null, date: '2026-09-10' })
+    expect(row).toEqual({
+      permitnumber: 'P-2026-001',
+      objectid: 42,
+      note: null,
+      date: '2026-09-10',
+    })
   })
 })
 
 describe('fetchAllRows', () => {
   it('returns the rows of a single short page', async () => {
-    const requests = stubGatewayPages([[{ objectid: 1, permitnumber: 'A' }, { objectid: 2, permitnumber: 'B' }]])
+    const requests = stubGatewayPages([
+      [
+        { objectid: 1, permitnumber: 'A' },
+        { objectid: 2, permitnumber: 'B' },
+      ],
+    ])
     const rows = await fetchAllRows({ table: 'permits', where: "address = '1234 MARKET ST'" })
     expect(rows.map((row) => row.permitnumber)).toEqual(['A', 'B'])
     expect(requests).toHaveLength(1)

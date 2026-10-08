@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
-import { AppHeader, NavbarBurger } from '@phila/phila-ui-app-header'
-import type { NavbarBrandProps } from '@phila/phila-ui-app-header'
+import { AppHeader, NavbarBurger, type NavbarBrandProps } from '@phila/phila-ui-app-header'
 import { AppFooter } from '@phila/phila-ui-app-footer'
-import { Breadcrumbs } from '@phila/phila-ui-breadcrumbs'
-import type { BreadcrumbItem } from '@phila/phila-ui-breadcrumbs'
+import { Breadcrumbs, type BreadcrumbItem } from '@phila/phila-ui-breadcrumbs'
 import { PhilaLink } from '@phila/phila-ui-link'
 import { useIsMobile } from '@/shared/useIsMobile'
 

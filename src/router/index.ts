@@ -1,5 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalizedLoaded } from 'vue-router'
 import DashboardView from '@/dashboard/DashboardView.vue'
 import PropertyHistoryView from '@/property-history/PropertyHistoryView.vue'
 import PropertyHistoryResults from '@/property-history/PropertyHistoryResults.vue'

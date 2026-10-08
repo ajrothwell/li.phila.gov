@@ -77,8 +77,12 @@ describe('PropertyHistoryView', () => {
       expect(wrapper.text()).toContain('2 Permits for this property')
       const cells = wrapper.findAll('tbody td').map((td) => td.text())
       expect(cells).toEqual([
-        'Jun 15, 2022', 'RP-2022-005991', 'Residential Building Permit',
-        'Mar 15, 2022', 'PP-2022-004106', 'Plumbing Permit',
+        'Jun 15, 2022',
+        'RP-2022-005991',
+        'Residential Building Permit',
+        'Mar 15, 2022',
+        'PP-2022-004106',
+        'Plumbing Permit',
       ])
     })
 

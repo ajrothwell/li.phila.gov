@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { flushPromises } from '@vue/test-utils'
-import type { VueWrapper } from '@vue/test-utils'
+import { flushPromises, type VueWrapper } from '@vue/test-utils'
 import router from '../router'
 import { mountAt } from './helpers'
 

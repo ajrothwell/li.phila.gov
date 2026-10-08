@@ -1,5 +1,4 @@
-import { fetchAllRows } from '@/shared/databridge'
-import type { DatabridgeRow } from '@/shared/databridge'
+import { fetchAllRows, type DatabridgeRow } from '@/shared/databridge'
 import type { AddressRecord } from '@/shared/ais'
 
 /** One permit, in our names. The table shows three fields; the detail page will use the rest. */

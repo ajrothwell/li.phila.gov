@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { fetchPermits, propertyRecordsWhere } from '../permits'
-import { lookupAddress } from '@/shared/ais'
-import type { AddressRecord } from '@/shared/ais'
+import { lookupAddress, type AddressRecord } from '@/shared/ais'
 import { stubGatewayPages } from '@/__tests__/fakeGateway'
 import { samplePermitRows } from '@/__tests__/fakeServices'
 
@@ -34,7 +33,7 @@ describe('propertyRecordsWhere', () => {
     expect(where).toContain("opa_account_num IN ('393258100')")
   })
 
-  it('doubles apostrophes so an address like O\'NEILL ST is valid SQL', () => {
+  it("doubles apostrophes so an address like O'NEILL ST is valid SQL", () => {
     const where = propertyRecordsWhere({ ...sampleAddress, streetAddress: "100 O'NEILL ST" })
     expect(where).toContain("address = '100 O''NEILL ST'")
   })

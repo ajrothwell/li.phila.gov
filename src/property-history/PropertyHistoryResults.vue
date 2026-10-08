@@ -19,7 +19,11 @@ watch(
   (address) => {
     if (typeof address !== 'string' || address === '') return
     // Already have this one (e.g. coming back from a detail page): don't ask again.
-    if (propertyHistoryStore.addressStatus === 'found' && propertyHistoryStore.searchedAddress === address) return
+    if (
+      propertyHistoryStore.addressStatus === 'found' &&
+      propertyHistoryStore.searchedAddress === address
+    )
+      return
     propertyHistoryStore.loadProperty(address)
   },
   { immediate: true },
@@ -28,7 +32,9 @@ watch(
 
 <template>
   <div class="results content">
-    <p v-if="propertyHistoryStore.addressStatus === 'loading'">Looking up {{ propertyHistoryStore.searchedAddress }}…</p>
+    <p v-if="propertyHistoryStore.addressStatus === 'loading'">
+      Looking up {{ propertyHistoryStore.searchedAddress }}…
+    </p>
 
     <p v-else-if="propertyHistoryStore.addressStatus === 'not-found'" class="not-found">
       No results found for {{ propertyHistoryStore.searchedAddress }}.
@@ -38,7 +44,10 @@ watch(
       Something went wrong looking up that address. Please try again.
     </p>
 
-    <dl v-else-if="propertyHistoryStore.addressStatus === 'found' && propertyHistoryStore.address" class="summary">
+    <dl
+      v-else-if="propertyHistoryStore.addressStatus === 'found' && propertyHistoryStore.address"
+      class="summary"
+    >
       <dt>Address</dt>
       <dd>{{ propertyHistoryStore.address.streetAddress }}</dd>
       <dt>L&amp;I district</dt>
